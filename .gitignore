@@ -37,10 +37,10 @@ yarn-error.log*
 # prisma
 /src/generated/prisma
 
-# agent skill bundles auto-installed by `prisma init` / `vercel integration add`
-# (regenerable via those commands; not project source)
+# agent skill bundles auto-installed by `prisma init` / `vercel integration add`,
+# and other local agent-tooling state (regenerable; not project source)
 /.agents/
-/.claude/skills/
+/.claude/
 /.windsurf/skills/
 /skills-lock.json
 

@@ -19,8 +19,11 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
+  accounts        Account[]
+  sessions        Session[]
+  hostedRooms     Room[]
+  roomMemberships RoomMember[]
+  votes           Vote[]
 }
 
 model Account {
@@ -57,4 +60,68 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// --- MovieMatch domain models ---
+
+enum RoomStatus {
+  open
+  expired
+}
+
+model Room {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  name        String
+  hostId      String
+  genreFilter Int?
+  region      String?    @default("US")
+  status      RoomStatus @default(open)
+  createdAt   DateTime   @default(now())
+  expiresAt   DateTime
+
+  host    User         @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  members RoomMember[]
+  votes   Vote[]
+  matches Match[]
+
+  @@index([hostId])
+}
+
+model RoomMember {
+  id       String   @id @default(cuid())
+  roomId   String
+  userId   String
+  joinedAt DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+}
+
+model Vote {
+  id          String   @id @default(cuid())
+  roomId      String
+  userId      String
+  tmdbMovieId Int
+  liked       Boolean
+  createdAt   DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId, tmdbMovieId])
+  @@index([roomId, tmdbMovieId])
+}
+
+model Match {
+  id          String   @id @default(cuid())
+  roomId      String
+  tmdbMovieId Int
+  matchedAt   DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, tmdbMovieId])
 }
