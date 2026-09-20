@@ -16,10 +16,18 @@ export default async function Home() {
       </p>
 
       {session?.user ? (
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-4">
           <p className="text-sm">
             Signed in as <span className="font-medium">{session.user.email}</span>
           </p>
+          <div className="flex gap-3">
+            <Button render={<Link href="/rooms/new" />} nativeButton={false}>
+              Create a room
+            </Button>
+            <Button render={<Link href="/rooms/join" />} nativeButton={false} variant="outline">
+              Join a room
+            </Button>
+          </div>
           <SignOutButton />
         </div>
       ) : (
