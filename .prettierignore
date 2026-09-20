@@ -3,3 +3,7 @@ node_modules
 build
 coverage
 package-lock.json
+.agents
+.claude/skills
+.windsurf/skills
+skills-lock.json
