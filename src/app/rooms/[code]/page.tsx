@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { CopyInviteButton } from '@/components/rooms/copy-invite-button';
+import { EndRoomButton } from '@/components/rooms/end-room-button';
+import { LeaveRoomButton } from '@/components/rooms/leave-room-button';
 import { RoomMemberList } from '@/components/rooms/room-member-list';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -63,6 +65,13 @@ export default async function RoomLobbyPage({ params }: PageProps<'/rooms/[code]
               </Button>
             ) : null}
           </div>
+
+          {joined ? (
+            <div className="border-border flex flex-col gap-3 border-t pt-4 sm:flex-row sm:justify-between">
+              <LeaveRoomButton roomId={room.id} />
+              {user.id === room.hostId && joinable ? <EndRoomButton roomId={room.id} /> : null}
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </div>

@@ -1,10 +1,12 @@
 'use client';
 
+import Link from 'next/link';
 import { toast } from 'sonner';
 
 import { MatchCelebration } from '@/components/rooms/match-celebration';
 import { RoomProgress } from '@/components/rooms/room-progress';
 import { SwipeStack } from '@/components/swipe/swipe-stack';
+import { Button } from '@/components/ui/button';
 import { useRoomState } from '@/hooks/use-room-state';
 import type { TmdbMovie } from '@/lib/tmdb/types';
 
@@ -26,6 +28,20 @@ export function SwipeScreen({ code, movies }: { code: string; movies: TmdbMovie[
 
   if (data?.match) {
     return <MatchCelebration code={code} match={data.match} />;
+  }
+
+  if (data?.status === 'expired') {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+        <p className="text-lg font-medium">This room has ended.</p>
+        <p className="text-muted-foreground text-sm">
+          The host closed it, or its 24-hour window ran out.
+        </p>
+        <Button render={<Link href={`/rooms/${code}`} />} nativeButton={false} variant="outline">
+          Back to room
+        </Button>
+      </div>
+    );
   }
 
   return (

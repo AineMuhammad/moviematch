@@ -82,3 +82,35 @@ export async function joinRoom(
 
   redirect(`/rooms/${room.code}`);
 }
+
+export async function endRoom(
+  _prevState: RoomActionState,
+  formData: FormData,
+): Promise<RoomActionState> {
+  const user = await requireUser();
+  const roomId = String(formData.get('roomId'));
+
+  const room = await prisma.room.findUnique({ where: { id: roomId } });
+  if (!room) {
+    return { error: 'Room not found' };
+  }
+  if (room.hostId !== user.id) {
+    return { error: 'Only the host can end this room' };
+  }
+
+  await prisma.room.update({ where: { id: roomId }, data: { status: 'expired' } });
+
+  redirect(`/rooms/${room.code}`);
+}
+
+export async function leaveRoom(
+  _prevState: RoomActionState,
+  formData: FormData,
+): Promise<RoomActionState> {
+  const user = await requireUser();
+  const roomId = String(formData.get('roomId'));
+
+  await prisma.roomMember.deleteMany({ where: { roomId, userId: user.id } });
+
+  redirect('/');
+}
