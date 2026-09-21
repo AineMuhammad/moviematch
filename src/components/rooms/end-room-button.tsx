@@ -11,9 +11,9 @@ export function EndRoomButton({ roomId }: { roomId: string }) {
   const [state, formAction, isPending] = useActionState(endRoom, initialState);
 
   return (
-    <form action={formAction} className="flex flex-col items-start gap-1">
+    <form action={formAction} className="flex w-full flex-col gap-1">
       <input type="hidden" name="roomId" value={roomId} />
-      <Button type="submit" variant="destructive" disabled={isPending}>
+      <Button type="submit" variant="destructive" disabled={isPending} className="w-full">
         {isPending ? 'Ending…' : 'End room'}
       </Button>
       {state.error ? <p className="text-destructive text-xs">{state.error}</p> : null}

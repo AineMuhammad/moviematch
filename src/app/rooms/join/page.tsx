@@ -7,7 +7,7 @@ export default async function JoinRoomPage({ searchParams }: PageProps<'/rooms/j
   const { code } = await searchParams;
 
   return (
-    <div className="mx-auto w-full max-w-sm px-4 py-12">
+    <div className="mx-auto w-full max-w-sm flex-1 px-4 py-12 md:py-20 lg:py-28">
       <Card>
         <CardHeader>
           <CardTitle>Join a room</CardTitle>

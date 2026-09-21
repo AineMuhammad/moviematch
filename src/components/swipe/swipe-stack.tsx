@@ -48,7 +48,7 @@ export function SwipeStack({
 
   return (
     <div className="flex flex-1 flex-col items-center gap-6">
-      <div className="relative aspect-[2/3] w-full max-w-xs flex-1">
+      <div className="relative aspect-[2/3] w-full max-w-xs flex-1 lg:max-w-sm">
         {upcoming
           .slice()
           .reverse()

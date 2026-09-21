@@ -50,22 +50,24 @@ export default async function RoomLobbyPage({ params }: PageProps<'/rooms/[code]
 
   const joined = room.members.some((member) => member.userId === user.id);
   const joinable = isRoomJoinable(room);
+  const isHost = user.id === room.hostId;
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-12">
-      <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-4">
-          <div>
-            <CardTitle>{room.name}</CardTitle>
-            <CardDescription>
-              Code <span className="font-mono font-semibold tracking-widest">{room.code}</span>
-            </CardDescription>
+    <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div className="grid gap-8 lg:grid-cols-3 lg:items-start lg:gap-12">
+        <div className="flex flex-col gap-8 lg:col-span-2">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{room.name}</h1>
+              <p className="text-muted-foreground mt-1">
+                Code <span className="font-mono font-semibold tracking-widest">{room.code}</span>
+              </p>
+            </div>
+            <Badge variant={joinable ? 'default' : 'secondary'}>
+              {joinable ? 'Open' : 'Expired'}
+            </Badge>
           </div>
-          <Badge variant={joinable ? 'default' : 'secondary'}>
-            {joinable ? 'Open' : 'Expired'}
-          </Badge>
-        </CardHeader>
-        <CardContent className="space-y-6">
+
           {!joined ? (
             <p className="text-destructive text-sm">
               This room has expired, so you can&apos;t join it.
@@ -73,29 +75,39 @@ export default async function RoomLobbyPage({ params }: PageProps<'/rooms/[code]
           ) : null}
 
           <div>
-            <h3 className="text-muted-foreground mb-2 text-sm font-medium">
+            <h2 className="text-muted-foreground mb-3 text-sm font-medium">
               {room.members.length} {room.members.length === 1 ? 'member' : 'members'}
-            </h3>
+            </h2>
             <RoomMemberList room={room} />
           </div>
+        </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row">
+        <Card className="lg:sticky lg:top-20">
+          <CardHeader>
+            <CardTitle>Room actions</CardTitle>
+            <CardDescription>Invite more people, or jump into swiping.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
             <CopyInviteButton code={room.code} />
             {joined && joinable ? (
-              <Button render={<Link href={`/rooms/${room.code}/swipe`} />} nativeButton={false}>
+              <Button
+                render={<Link href={`/rooms/${room.code}/swipe`} />}
+                nativeButton={false}
+                className="w-full"
+              >
                 Start swiping
               </Button>
             ) : null}
-          </div>
 
-          {joined ? (
-            <div className="border-border flex flex-col gap-3 border-t pt-4 sm:flex-row sm:justify-between">
-              <LeaveRoomButton roomId={room.id} />
-              {user.id === room.hostId && joinable ? <EndRoomButton roomId={room.id} /> : null}
-            </div>
-          ) : null}
-        </CardContent>
-      </Card>
+            {joined ? (
+              <div className="border-border mt-2 flex flex-col gap-3 border-t pt-4">
+                <LeaveRoomButton roomId={room.id} />
+                {isHost && joinable ? <EndRoomButton roomId={room.id} /> : null}
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

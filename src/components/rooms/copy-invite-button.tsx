@@ -21,7 +21,7 @@ export function CopyInviteButton({ code }: { code: string }) {
   }
 
   return (
-    <Button type="button" variant="outline" onClick={handleCopy}>
+    <Button type="button" variant="outline" className="w-full" onClick={handleCopy}>
       {copied ? 'Copied!' : 'Copy invite link'}
     </Button>
   );

@@ -17,7 +17,7 @@ export function MatchCelebration({ code, match }: { code: string; match: RoomMat
       </div>
 
       {match.trailerKey ? (
-        <div className="aspect-video w-full max-w-sm overflow-hidden rounded-xl shadow-lg">
+        <div className="aspect-video w-full overflow-hidden rounded-xl shadow-lg">
           <iframe
             className="h-full w-full"
             src={`https://www.youtube.com/embed/${match.trailerKey}`}
