@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { checkForMatch } from '@/lib/rooms/matches';
 import { getRoomForApi, isRoomJoinable } from '@/lib/rooms/queries';
 import { castVoteSchema } from '@/lib/validations/votes';
 
@@ -40,6 +41,10 @@ export async function POST(request: Request, { params }: RouteContext<'/api/room
     create: { roomId: room.id, userId: session.user.id, tmdbMovieId, liked },
     update: { liked },
   });
+
+  if (liked) {
+    await checkForMatch(room.id, tmdbMovieId);
+  }
 
   return NextResponse.json({ ok: true });
 }

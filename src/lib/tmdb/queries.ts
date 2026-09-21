@@ -1,5 +1,10 @@
 import { tmdbFetch } from '@/lib/tmdb/client';
-import type { TmdbGenreListResponse, TmdbMovieListResponse } from '@/lib/tmdb/types';
+import type {
+  TmdbGenreListResponse,
+  TmdbMovieDetails,
+  TmdbMovieListResponse,
+  TmdbVideoListResponse,
+} from '@/lib/tmdb/types';
 
 export type DiscoverMoviesParams = {
   page?: number;
@@ -28,4 +33,24 @@ export function discoverMovies({ page = 1, genreId, region }: DiscoverMoviesPara
 
 export function getMovieGenres() {
   return tmdbFetch<TmdbGenreListResponse>('/genre/movie/list', {}, { revalidateSeconds: 86400 });
+}
+
+export function getMovieDetails(movieId: number) {
+  return tmdbFetch<TmdbMovieDetails>(`/movie/${movieId}`, {}, { revalidateSeconds: 86400 });
+}
+
+export function getMovieVideos(movieId: number) {
+  return tmdbFetch<TmdbVideoListResponse>(
+    `/movie/${movieId}/videos`,
+    {},
+    { revalidateSeconds: 86400 },
+  );
+}
+
+export function findYoutubeTrailerKey(videos: TmdbVideoListResponse['results']): string | null {
+  const trailer =
+    videos.find((v) => v.site === 'YouTube' && v.type === 'Trailer' && v.official) ??
+    videos.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ??
+    videos.find((v) => v.site === 'YouTube');
+  return trailer?.key ?? null;
 }

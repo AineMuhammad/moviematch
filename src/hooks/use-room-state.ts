@@ -1,9 +1,20 @@
 import useSWR from 'swr';
 
+export type RoomMatch = {
+  tmdbMovieId: number;
+  matchedAt: string;
+  title: string;
+  overview: string;
+  posterPath: string | null;
+  voteAverage: number;
+  trailerKey: string | null;
+};
+
 export type RoomState = {
   memberCount: number;
   votedMemberCount: number;
   status: 'open' | 'expired';
+  match: RoomMatch | null;
 };
 
 const fetcher = (url: string) =>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { getLatestMatch, getMatchDetails } from '@/lib/rooms/matches';
 import { getRoomForApi } from '@/lib/rooms/queries';
 
 export async function GET(_request: Request, { params }: RouteContext<'/api/rooms/[code]/state'>) {
@@ -21,15 +22,21 @@ export async function GET(_request: Request, { params }: RouteContext<'/api/room
     return NextResponse.json({ error: 'You are not a member of this room' }, { status: 403 });
   }
 
-  const votedMemberIds = await prisma.vote.findMany({
-    where: { roomId: room.id },
-    distinct: ['userId'],
-    select: { userId: true },
-  });
+  const [votedMemberIds, latestMatch] = await Promise.all([
+    prisma.vote.findMany({
+      where: { roomId: room.id },
+      distinct: ['userId'],
+      select: { userId: true },
+    }),
+    getLatestMatch(room.id),
+  ]);
+
+  const match = latestMatch ? await getMatchDetails(latestMatch) : null;
 
   return NextResponse.json({
     memberCount: room.members.length,
     votedMemberCount: votedMemberIds.length,
     status: room.status,
+    match,
   });
 }
