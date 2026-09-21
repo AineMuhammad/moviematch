@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 
-import { SwipeStack } from '@/components/swipe/swipe-stack';
+import { SwipeScreen } from '@/components/swipe/swipe-screen';
 import { getRoomMovieDeck } from '@/lib/rooms/movies';
 import { getRoomWithMembers, isRoomJoinable } from '@/lib/rooms/queries';
 import { requireUser } from '@/lib/session';
@@ -26,7 +26,7 @@ export default async function SwipePage({ params }: PageProps<'/rooms/[code]/swi
   return (
     <div className="mx-auto flex w-full max-w-sm flex-1 flex-col px-4 py-8">
       <h1 className="mb-4 text-center text-lg font-semibold">{room.name}</h1>
-      <SwipeStack movies={movies} />
+      <SwipeScreen code={room.code} movies={movies} />
     </div>
   );
 }

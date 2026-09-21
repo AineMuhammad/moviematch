@@ -33,3 +33,14 @@ export async function ensureRoomMembership(roomId: string, userId: string) {
     update: {},
   });
 }
+
+export function getRoomForApi(code: string) {
+  return prisma.room.findUnique({
+    where: { code },
+    include: {
+      members: { select: { userId: true } },
+    },
+  });
+}
+
+export type RoomForApi = NonNullable<Awaited<ReturnType<typeof getRoomForApi>>>;
