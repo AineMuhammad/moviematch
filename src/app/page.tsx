@@ -20,7 +20,7 @@ export default async function Home() {
           <p className="text-sm">
             Signed in as <span className="font-medium">{session.user.email}</span>
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             <Button render={<Link href="/rooms/new" />} nativeButton={false}>
               Create a room
             </Button>
@@ -31,7 +31,7 @@ export default async function Home() {
           <SignOutButton />
         </div>
       ) : (
-        <div className="flex gap-3">
+        <div className="flex flex-wrap justify-center gap-3">
           <Button render={<Link href="/sign-up" />} nativeButton={false}>
             Get started
           </Button>

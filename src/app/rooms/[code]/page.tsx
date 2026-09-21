@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -8,8 +9,29 @@ import { RoomMemberList } from '@/components/rooms/room-member-list';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { prisma } from '@/lib/prisma';
 import { ensureRoomMembership, getRoomWithMembers, isRoomJoinable } from '@/lib/rooms/queries';
 import { requireUser } from '@/lib/session';
+
+const OG_DESCRIPTION =
+  'Swipe on movies together and get an instant match the moment everyone agrees.';
+
+export async function generateMetadata({ params }: PageProps<'/rooms/[code]'>): Promise<Metadata> {
+  const { code } = await params;
+  const room = await prisma.room.findUnique({
+    where: { code: code.toUpperCase() },
+    select: { name: true },
+  });
+
+  const title = room ? `Join "${room.name}" on MovieMatch` : 'MovieMatch room';
+
+  return {
+    title,
+    description: OG_DESCRIPTION,
+    openGraph: { title, description: OG_DESCRIPTION },
+    twitter: { card: 'summary_large_image', title, description: OG_DESCRIPTION },
+  };
+}
 
 export default async function RoomLobbyPage({ params }: PageProps<'/rooms/[code]'>) {
   const user = await requireUser();
