@@ -1,8 +1,10 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { CopyInviteButton } from '@/components/rooms/copy-invite-button';
 import { RoomMemberList } from '@/components/rooms/room-member-list';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ensureRoomMembership, getRoomWithMembers, isRoomJoinable } from '@/lib/rooms/queries';
 import { requireUser } from '@/lib/session';
@@ -55,6 +57,11 @@ export default async function RoomLobbyPage({ params }: PageProps<'/rooms/[code]
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <CopyInviteButton code={room.code} />
+            {joined && joinable ? (
+              <Button render={<Link href={`/rooms/${room.code}/swipe`} />} nativeButton={false}>
+                Start swiping
+              </Button>
+            ) : null}
           </div>
         </CardContent>
       </Card>
